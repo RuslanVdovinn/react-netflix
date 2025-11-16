@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { MovieCard } from './MovieCard'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import MovieCard from './MovieCard'
 import { MOVIES } from './movies.data'
 import { useDebounce } from './hooks/useDebounce'
 import { useTheme } from './hooks/useTheme'
@@ -10,7 +10,10 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const debouncedSearchTerm = useDebounce(searchTerm, 400)
 
-  const movies = MOVIES.filter(movie => movie.name.includes(debouncedSearchTerm))
+  const movies = useMemo(() => {
+    return MOVIES.filter(movie => movie.name.includes(debouncedSearchTerm))
+  }, [debouncedSearchTerm])
+
 
   return (
     <div className="min-h-screen w-full bg-white dark:bg-black 
@@ -49,7 +52,7 @@ function App() {
                 key={movie.name}
                 image={movie.image}
                 rating={movie.rating}
-                trailerYouTubeVideo={movie.trailerYouTubeId}
+                trailerYouTubeId={movie.trailerYouTubeId}
               />
             )
           }) : <p>No movies found</p>
